@@ -1,7 +1,13 @@
 
 const endPoint = "http://localhost:3201/car";
 let tableBody = document.getElementById('table-body');
-fetch(endPoint)
+fetch(endPoint, {
+    headers: {
+        'Accept': 'application/json',
+        'aut': 'Bearer ' + window.localStorage.getItem('token'),
+        'Content-Type': 'application/json'
+    }
+})
     .then((res) => res.json()
         .then((data) => tableBuild(data)))
     .catch(err => console.log(err));
@@ -36,7 +42,7 @@ loginBtn.addEventListener("click", function (e) {
         body: JSON.stringify(),
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'basic ' + btoa(params.user + ':' + params.pass)
+            'aut': 'basic ' + btoa(params.user + ':' + params.pass)
         }
     }).then(res => {
         delete params;

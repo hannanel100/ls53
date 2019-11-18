@@ -16,7 +16,8 @@ app.use(function (req, res, next) {
     }
     else {
         try {
-            const token = jwt.verify(splitCredentials(req.headers.authorization), 'shhhhh');
+            const token = jwt.verify(splitCredentials(req.headers.aut), 'shoko');
+            console.log(token.user);
             next();
         } catch (ex) {
             console.log(ex);
@@ -34,7 +35,7 @@ app.post('/auth', function (req, res) {
                 user: user,
             }, 'shoko',
                 {
-                    expiresIn: 500
+                    expiresIn: 50000
                 });
             res.send(token);
         } else {
@@ -44,14 +45,16 @@ app.post('/auth', function (req, res) {
 });
 
 function splitCredentials(str) {
-    const authHeader = str.split(' ');
-    if (authHeader[0] === 'basic') {
-        return {
-            user: atob(authHeader[1]).split(':')[0],
-            pass: atob(authHeader[1]).split(':')[1]
+    if (str) {
+        const authHeader = str.split(' ');
+        if (authHeader[0] === 'basic') {
+            return {
+                user: atob(authHeader[1]).split(':')[0],
+                pass: atob(authHeader[1]).split(':')[1]
+            }
+        } else if (authHeader[0] === 'bearer') {
+            return authHeader[1];
         }
-    } else if (authHeader[0] === 'bearer') {
-        return authHeader[1];
     }
 }
 app.get('/car', (req, res) => {
