@@ -21,3 +21,8 @@ const tableBuild = (carsArray) => {
     tableBody.innerHTML = table;
 }
 
+let user = document.getElementById('username');
+user.addEventListener("change", function(e){
+    //GET INPUT OF USERNAME
+})
+const  
