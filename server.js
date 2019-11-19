@@ -16,8 +16,7 @@ app.use(function (req, res, next) {
     }
     else {
         try {
-            const token = jwt.verify(splitCredentials(req.headers.aut), 'shoko');
-            console.log(token.user);
+            const token = jwt.verify(splitCredentials(req.headers.authorization), 'shoko');
             next();
         } catch (ex) {
             console.log(ex);
@@ -52,7 +51,7 @@ function splitCredentials(str) {
                 user: atob(authHeader[1]).split(':')[0],
                 pass: atob(authHeader[1]).split(':')[1]
             }
-        } else if (authHeader[0] === 'bearer') {
+        } else if (authHeader[0] === 'Bearer') {
             return authHeader[1];
         }
     }
@@ -68,7 +67,6 @@ app.get('/car', (req, res) => {
 });
 
 app.get('/car/:id', (req, res) => {
-    console.log(req.params.id)
     carBl.getCar(Number(req.params.id), function (e, data) {
         if (e) {
             console.log(e)
@@ -80,6 +78,29 @@ app.get('/car/:id', (req, res) => {
     })
 });
 
+app.put('/car/:id', (req,res) =>{
+    carBl.updateCar(Number(req.params.id), function (e, data) {
+        if (e) {
+            console.log(e)
+            return res.status(500).send();
+        } else {
+            console.log(data);
+            return res.send(data);
+        }
+    })
+});
+
+app.delete('/car/:id', (req,res) =>{
+    carBl.deleteCar(Number(req.params.id), function (e, data) {
+        if (e) {
+            console.log(e)
+            return res.status(500).send();
+        } else {
+            console.log(data);
+            return res.send(data);
+        }
+    })
+});
 app.listen(process.env.PORT || PORT, () =>
     console.log(`Example app listening on port ${process.env.PORT || PORT}!`),
 );
