@@ -73,7 +73,8 @@ document.body.addEventListener('click', function (event) {
                     'Accept': 'application/json',
                     'authorization': 'Bearer ' + window.localStorage.getItem('token'),
                     'Content-Type': 'application/json'
-                }
+                },
+                
             })
                 .then((res) => res.json()
                     .then((data) => tableBuild(data)))
@@ -84,6 +85,7 @@ document.body.addEventListener('click', function (event) {
 });
 
 document.getElementById("add").addEventListener('click', function (event) {
+    //add car model = function consructur for obj
     let carObj = {
         id: '',
         name: '',
@@ -99,14 +101,14 @@ document.getElementById("add").addEventListener('click', function (event) {
     carObj.currency = document.getElementById('add-currency').value;
     carObj.doors = document.getElementById('doors').value;
     carObj.seats = document.getElementById('seats').value;
-    let id = //need to find last id and add one more to it so i can send it to server in fetch-post
-        fetch(`${endPoint}/`, {
+        fetch(`${endPoint}`, {
             method: 'POST',
             body: JSON.stringify(),
             headers: {
                 'Content-Type': 'application/json',
                 'authorization': 'Bearer ' + window.localStorage.getItem('token'),
-            }
+            },
+            body: JSON.stringify({ car: carObj }),
         }).then(res => {
             delete params;
             res.text().then(token => {

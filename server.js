@@ -11,7 +11,17 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
-    if (req.method === 'POST' && req.path === '/auth') {
+    const skipEndPoint = [
+        {
+            path: '/auth',
+            method: 'POST'
+        },
+        {
+            path: '/cars',
+            method: 'GET'
+        },
+    ]
+    if (skipEndPoint.find(endPoint => endPoint.method === req.method && endPoint.path === req.path)) {
         next();
     }
     else {
@@ -73,6 +83,15 @@ app.get('/car/:id', (req, res) => {
             return res.status(500).send();
         } else {
             console.log(data);
+            return res.send(data);
+        }
+    })
+});
+app.post('/car', (req, res) => {
+    carBl.createCar((e, data) => {
+        if (e) {
+            return res.status(500).send();
+        } else {
             return res.send(data);
         }
     })

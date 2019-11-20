@@ -1,15 +1,16 @@
 const dalFunc = require('./dal');
 const dal = dalFunc('./db/test.json');
+const uuid = require('uuid/v1');
 
 function getCar(id, callback) {
-    dal.readOne(id,  (e, carData) => {
+    dal.readOne(id, (e, carData) => {
         if (e) {
             callback(e);
         } else {
             callback(null, carData);
         }
     })
-    
+
 }
 function getCars(callback) {
     dal.readAll((e, allcars) => {
@@ -22,17 +23,15 @@ function getCars(callback) {
 }
 
 function createCar(addedCar, callback) {
-    if (typeof addedCar.id !== 'number') {
-        callback('car id should be string');
-    } else {
-        dal.saveOne(addedCar, (e) => {
-            if (e) {
-                callback(e);
-            } else {
-                callback(null);
-            }
-        })
-    }
+    addedCar.id = uuid();
+    dal.saveOne(addedCar, (e, data) => {
+        if (e) {
+            callback(e);
+        } else {
+            callback(null, data);
+        }
+    })
+
 }
 
 function updateCar(carToUpdate, callback) {
