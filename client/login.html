@@ -9,11 +9,15 @@
 </head>
 
 <body>
-    <input type="text" name="user-name" id="user">
-    <input type="password" name="password" id="pass">
-    <input type="button" value="Admin Login" id="login-btn">
-    <p>If you are not an Admin press here:</p>
-    <input type="button" value="Client" id="login-btn">
+    <nav>
+        <ul>
+            <li><a data-href="login" href="login">Login</a></li>
+            <li><a data-href="logout" href="logout">Logout</a></li>
+            <li><a data-href="client" href="client">Client</a></li>
+            <li><a data-href="admin" href="admin">Admin</a></li>
+        </ul>
+    </nav>
+    <div id="main"></div>
     <script src="index.js"></script>
 </body>
 

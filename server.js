@@ -7,25 +7,28 @@ const app = express();
 const carBl = require('./server/car-bl.js');
 const PORT = 3201;
 const cors = require('cors');
-app.use(cors())
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
     const skipEndPoint = [
         {
-            path: '/auth',
+            path: '/login',
             method: 'POST'
         },
         {
             path: '/cars',
             method: 'GET'
-        },
+        }
     ]
+    
     if (skipEndPoint.find(endPoint => endPoint.method === req.method && endPoint.path === req.path)) {
+        
         next();
     }
     else {
         try {
+            
             const token = jwt.verify(splitCredentials(req.headers.authorization), 'shoko');
             next();
         } catch (ex) {
@@ -34,12 +37,12 @@ app.use(function (req, res, next) {
         }
     }
 })
-app.post('/auth', function (req, res) {
+app.post('/login', function (req, res) {
     const { user, pass } = splitCredentials(req.headers.authorization);
     if (!user) {
         res.status(403).send();
     } else {
-        if (user === 'student' && pass === 'pass123') {
+        if (user === 'a' && pass === 'a') {
             const token = jwt.sign({
                 user: user,
             }, 'shoko',
@@ -57,16 +60,17 @@ function splitCredentials(str) {
     if (str) {
         const authHeader = str.split(' ');
         if (authHeader[0] === 'basic') {
+
             return {
                 user: atob(authHeader[1]).split(':')[0],
                 pass: atob(authHeader[1]).split(':')[1]
             }
-        } else if (authHeader[0] === 'Bearer') {
+        } else if (authHeader[0] === 'bearer') {
             return authHeader[1];
         }
     }
 }
-app.get('/car', (req, res) => {
+app.get('/cars', (req, res) => {
     carBl.getCars((e, data) => {
         if (e) {
             return res.status(500).send();
@@ -75,6 +79,8 @@ app.get('/car', (req, res) => {
         }
     })
 });
+
+
 
 app.get('/car/:id', (req, res) => {
     carBl.getCar(Number(req.params.id), function (e, data) {
@@ -97,7 +103,7 @@ app.post('/car', (req, res) => {
     })
 });
 
-app.put('/car/:id', (req,res) =>{
+app.put('/car/:id', (req, res) => {
     carBl.updateCar(Number(req.params.id), function (e, data) {
         if (e) {
             console.log(e)
@@ -109,7 +115,7 @@ app.put('/car/:id', (req,res) =>{
     })
 });
 
-app.delete('/car/:id', (req,res) =>{
+app.delete('/car/:id', (req, res) => {
     carBl.deleteCar(Number(req.params.id), function (e, data) {
         if (e) {
             console.log(e)

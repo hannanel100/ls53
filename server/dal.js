@@ -22,9 +22,10 @@ function readOne(id, callback) {
 function readAll(callback) {
     fs.readFile(fileName, (e, d) => {
         const allElements = d && d.length > 0 ? JSON.parse(d.toString()) : [];
-        allElements.sort(function (a, b) {
-            return a.id - b.id;
-        });
+        // allElements.sort(function (a, b) {
+        //     return a.id - b.id;
+        // });
+        // allElements.sort
         if (e) {
             callback(e);
         } else {
