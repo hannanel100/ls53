@@ -15,21 +15,23 @@ for (let i = 0; i < links.length; i++) {
 const navigate = (url) => {
     const main = document.getElementById("main");
     switch (url) {
-
         case 'login':
-
             main.innerHTML = '';
             const p = buildLoginHtml();
             main.appendChild(p);
             break;
         case 'admin':
+            main.innerHTML = '';
             ajaxCall('cars', methods.GET, null, function (data) {
                 data = JSON.parse(data);
                 const adminHtml = buildAdminHtml(data);
                 main.appendChild(adminHtml);
+
+                //need to add event listener to add button and recieve data to send to server - POST
             });
             break;
         case 'client':
+            main.innerHTML = '';
             ajaxCall('cars', methods.GET, null, (data) => {
                 data = JSON.parse(data);
                 let table = buildCarTable(data);
@@ -97,7 +99,6 @@ const ajaxCall = (endPoint, verb, data, callback) => {
 }
 const buildCarTable = (data) => {
     let table = document.createElement("table");
-    console.log(data)
     generateTable(table, data);
     generateTableHead(table, Object.keys(data[0]));
 
@@ -119,32 +120,59 @@ const generateTable = (table, data) => {
         let row = table.insertRow();
         for (key in element) {
             let cell = row.insertCell();
-            let text = document.createTextNode(element[key]);
-            cell.appendChild(text);
+
+            if (element[key].tagName && element[key].tagName === 'DIV') {
+                // cell.append(element[key]);
+                //problem here - appends buttons only to last row
+                console.log(element[key]);
+                let button = element[key];
+                cell.append(button);
+            }
+            else {
+                let text = document.createTextNode(element[key]);
+                cell.append(text);
+            }
+
         }
     }
 }
 const buildAdminHtml = (data) => {
-
-
     const parent = document.createElement('div');
     let add = generateAddCarHtml(data);
+    parent.append(add);
     const buttonsDiv = document.createElement('div');
     const editBtn = document.createElement('button');
     editBtn.name = "edit";
+    editBtn.innerText = "Edit";
     const delBtn = document.createElement('button');
     delBtn.name = "delete";
-    buttonsDiv.appendChild(editBtn);
-    buttonsDiv.appendChild(delBtn);
+    delBtn.innerText = "Delete"
+    buttonsDiv.append(editBtn);
+    buttonsDiv.append(delBtn);
     const tableCarsArray = data.map(v => ({ ...v, buttons: buttonsDiv }))
     const table = buildCarTable(tableCarsArray);
-    parent.appendChild(table);
+    parent.append(table);
     return parent;
 }
 const generateAddCarHtml = (data) => {
-
     let parent = document.createElement('div');
-
+    parent.className = 'input-group-prepend';
+    let inputElementsArray = Object.keys(data[0]);
+    inputElementsArray.forEach(element => {
+        const input = document.createElement('input');
+        const inputLabel = document.createElement('label');
+        inputLabel.name = element;
+        inputLabel.innerText = element + ': ';
+        input.name = element;
+        input.id = `input-${element}`;
+        input.className = 'form-control';
+        inputLabel.append(input);
+        parent.append(inputLabel);
+    })
+    const addBtn = document.createElement('button');
+    addBtn.id = 'add-btn';
+    addBtn.innerText = 'Add';
+    parent.append(addBtn);
     return parent;
 
 }
