@@ -1,5 +1,14 @@
 const TOKEN_LOCAL_STORAGE_KEY = 'token';
-
+const carModel = {
+    id: '',
+    name: '',
+    price: '',
+    monthly: '',
+    currency: '',
+    doors: '',
+    seats: '',
+    image: ''
+}
 const links = document.querySelectorAll("nav li [data-href]");
 const methods = {
     POST: "POST",
@@ -26,7 +35,10 @@ const navigate = (url) => {
                 data = JSON.parse(data);
                 const adminHtml = buildAdminHtml(data);
                 main.appendChild(adminHtml);
-
+                const addBtn = document.getElementById("add-btn");
+                addBtn.addEventListener("click", (e) => {
+                    addHandler(e);
+                })
                 //need to add event listener to add button and recieve data to send to server - POST
             });
             break;
@@ -120,12 +132,13 @@ const generateTable = (table, data) => {
         let row = table.insertRow();
         for (key in element) {
             let cell = row.insertCell();
-
+            // console.log(cell);
             if (element[key].tagName && element[key].tagName === 'DIV') {
                 // cell.append(element[key]);
                 //problem here - appends buttons only to last row
-                console.log(element[key]);
+                // console.log(element[key]);
                 let button = element[key];
+                console.log(button)
                 cell.append(button);
             }
             else {
@@ -150,6 +163,7 @@ const buildAdminHtml = (data) => {
     buttonsDiv.append(editBtn);
     buttonsDiv.append(delBtn);
     const tableCarsArray = data.map(v => ({ ...v, buttons: buttonsDiv }))
+    tableCarsArray.forEach(e => console.log(e));
     const table = buildCarTable(tableCarsArray);
     parent.append(table);
     return parent;
@@ -175,6 +189,20 @@ const generateAddCarHtml = (data) => {
     parent.append(addBtn);
     return parent;
 
+}
+const addHandler = (e) => {
+    //stuck here!
+    // console.log(e.target.id)
+    // let addCar = Object.create(carModel);
+    // const keys = Object.keys(addCar);
+    // console.log(add);
+    // for (key in keys) {
+    //     addCar[key] = document.getElementById(`input-${key}`).value;
+
+    // }
+    // console.log(addCar);
+    // addCar.id = document.getElementById("input-id").value;
+    // console.log(addCar);
 }
     // const endPoint = "http://localhost:3201/car";
     //     let tableBody = document.getElementById('table-body');
